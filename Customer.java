@@ -1,3 +1,6 @@
+import java.util.ArrayList;
+import java.util.HashMap;
+
 public class Customer{
 
   private String name;
@@ -20,6 +23,10 @@ public class Customer{
     return this.name;
   }
 
+  public Basket getBasket() {
+    return this.basket;
+  }
+
   public void setName(String name) {
     this.name = name;
   }
@@ -36,20 +43,62 @@ public class Customer{
     basket.addItem(item);
   }
 
-  public double getTotal() {
+
+  public double getTotalForBogofItems() {
+
+    ArrayList<Item> bogofArray = new ArrayList<>();
     double total = 0;
+    HashMap<Item, Integer> groupedItems = new HashMap<>();
+
     for (Item item : basket.getItems()) {
+      if (item.hasBogof()) {
+        bogofArray.add(item);
+      }
+    }
+    for (Item item : bogofArray) {
+      if (groupedItems.containsKey(item)) {
+        Integer oldKey = groupedItems.get(item);
+        groupedItems.put(item, oldKey + 1);
+      } else {
+        groupedItems.put(item, 1);
+      }
+    }
+
+    for (Item item : groupedItems.keySet()) {
+      double numberOfItems = (double) groupedItems.get(item);
+      double priceOfItem = item.getPrice();
+      total += priceOfItem * Math.ceil(numberOfItems/2);
+    }
+
+    return total;
+  }
+
+
+  public double getTotal() {
+
+    ArrayList<Item> nonBogofArray = new ArrayList<>();
+    double total = 0;
+
+    for (Item item : basket.getItems()) {
+      if (!item.hasBogof()) {
+        nonBogofArray.add(item);
+      }
+    }
+
+    for (Item item : nonBogofArray) {
       total += item.getPrice();
     }
+
+    total += getTotalForBogofItems();
+
     if (total > 20) {
       total = total * 0.9;
     }
+
     if (hasLoyaltyCard) {
       total = total * 0.98;
     }
     return total;
   }
-
-
 
 }

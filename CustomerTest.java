@@ -7,13 +7,15 @@ public class CustomerTest{
   Item item;
   Item otherItem;
   Item expensiveItem;
+  Item bogofItem1;
 
   @Before
   public void before() {
     customer = new Customer("nina");
     item = new Item("something", 12);
     otherItem = new Item("something else", 4);
-    expensiveItem = new Item("expensiveItem", 100);
+    expensiveItem = new Item("expensive thing", 100);
+    bogofItem1 = new Item("buy one get one free", 5, true);
   }
 
   @Test 
@@ -56,6 +58,21 @@ public class CustomerTest{
     customer.setLoyaltyCard(true);
     customer.addItemToBasket(expensiveItem);
     assertEquals(88.2, customer.getTotal(), 0.01);
+  }
+
+  @Test 
+  public void canAddTwoOfTheSameItem() {
+    customer.addItemToBasket(expensiveItem);
+    customer.addItemToBasket(expensiveItem);
+    assertEquals(2, customer.getBasket().getNumberOfItems());
+  }
+
+  @Test
+  public void canFindTotalWithBogofItems() {
+    customer.addItemToBasket(bogofItem1);
+    customer.addItemToBasket(bogofItem1);
+    customer.addItemToBasket(bogofItem1);
+    assertEquals(10, customer.getTotal(), 0.01);
   }
 
 }

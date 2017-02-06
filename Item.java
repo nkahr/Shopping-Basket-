@@ -10,6 +10,12 @@ public class Item {
     this.bogof = false;
   }
 
+  public Item(String name, double price, boolean bogof){
+    this.name = name;
+    this.price = price;
+    this.bogof = bogof;
+  }
+
   public String getName() {
     return this.name;
   }
@@ -24,7 +30,7 @@ public class Item {
 
   public void setPrice(double price) {
     this.price = price;
-  }
+  } 
 
   public boolean hasBogof() {
     return this.bogof;
